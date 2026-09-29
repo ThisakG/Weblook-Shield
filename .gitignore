@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Environment / secrets — NEVER commit real .env files (Proposal Sec. 10)
+.env
+.env.local
+*.env
+
+# Build output
+frontend/dist/
+backend/dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor cruft
+.DS_Store
+.vscode/
+.idea/
+
+# Test coverage
+coverage/

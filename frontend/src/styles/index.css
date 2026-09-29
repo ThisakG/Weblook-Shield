@@ -1,0 +1,48 @@
+/* ----------------------------------------------------------------------------
+ * index.css
+ * WHY a hand-written base layer on top of Tailwind: the assignment calls
+ * for a consistent Red/Gray/White theme AND for WCAG-informed color
+ * contrast (Usability NFR). These base classes centralise the few
+ * repeated patterns (cards, buttons, badges) so contrast and spacing stay
+ * consistent everywhere instead of being redecided per page.
+ * ---------------------------------------------------------------------------- */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Primary action button — brand red, white text (contrast ratio > 4.5:1) */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-md bg-brand-500 px-4 py-2
+           text-sm font-semibold text-white shadow-sm transition hover:bg-brand-600
+           focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
+           focus-visible:outline-brand-700 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  /* Secondary/neutral button — gray, for less-destructive or cancel actions */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-md bg-slate-100 px-4 py-2
+           text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-300
+           transition hover:bg-slate-200 focus-visible:outline focus-visible:outline-2
+           focus-visible:outline-offset-2 focus-visible:outline-slate-500;
+  }
+  /* Destructive button — darker red, reserved for suspend/delete actions */
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-md bg-brand-700 px-4 py-2
+           text-sm font-semibold text-white shadow-sm transition hover:bg-brand-800;
+  }
+  .card {
+    @apply rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200;
+  }
+  .input-field {
+    @apply block w-full rounded-md border-0 py-2 px-3 text-slate-900 shadow-sm ring-1 ring-inset
+           ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset
+           focus:ring-brand-500 text-sm;
+  }
+  .label {
+    @apply block text-sm font-medium text-slate-700 mb-1;
+  }
+  .badge-success { @apply inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-200; }
+  .badge-warning { @apply inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-800 ring-1 ring-inset ring-amber-200; }
+  .badge-danger  { @apply inline-flex items-center rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700 ring-1 ring-inset ring-brand-200; }
+  .badge-neutral { @apply inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-200; }
+}

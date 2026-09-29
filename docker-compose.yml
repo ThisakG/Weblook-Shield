@@ -1,0 +1,65 @@
+# ==============================================================================
+# docker-compose.yml
+# ------------------------------------------------------------------------------
+# Brings up all three tiers of the Proposal Section 11 architecture in one
+# command: PostgreSQL (database), the Express API (backend), and the React
+# SPA served by Nginx (frontend). This is the "Containerized deployment
+# (Docker)" approach named in Proposal Section 12.
+# ==============================================================================
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: weblook
+      POSTGRES_PASSWORD: weblook_dev_password   # change this for anything beyond local/dev use
+      POSTGRES_DB: weblook_shield
+    ports:
+      - '5432:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      # Schema is applied automatically the FIRST time the container starts
+      # (Postgres only runs files in this dir on an empty data volume).
+      - ./backend/src/db/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U weblook -d weblook_shield']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgresql://weblook:weblook_dev_password@db:5432/weblook_shield
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?Set JWT_ACCESS_SECRET in your .env file}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?Set JWT_REFRESH_SECRET in your .env file}
+      CSRF_SECRET: ${CSRF_SECRET:?Set CSRF_SECRET in your .env file}
+      CORS_ORIGIN: http://localhost:5173,http://localhost:8080
+      MAX_FAILED_LOGIN_ATTEMPTS: 5
+      LOCKOUT_DURATION_MINUTES: 15
+      BCRYPT_ROUNDS: 12
+    ports:
+      - '4000:4000'
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: /api
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - '8080:80'
+
+volumes:
+  db_data:
