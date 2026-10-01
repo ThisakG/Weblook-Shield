@@ -31,10 +31,7 @@ export default function AdminOverview() {
         <StatCard label="Training modules completed" value={overview.completedModules} />
         <StatCard label="Pending asset requests" value={overview.pendingAssetRequests} tone={overview.pendingAssetRequests ? 'danger' : 'neutral'} />
       </div>
-      <p className="text-xs text-slate-400">
-        These KPIs power the "Analytics Dashboard" referenced throughout the proposal — e.g. failed logins here are the same
-        counter that automatic account-lockout alerts feed into (WSP-04 §3.3).
-      </p>
+      
     </div>
   );
 }
