@@ -140,8 +140,15 @@ CREATE TABLE IF NOT EXISTS training_modules (
     lesson_content      TEXT NOT NULL,             -- plain-language lesson body
     estimated_minutes   SMALLINT NOT NULL DEFAULT 10,
     order_index         SMALLINT NOT NULL DEFAULT 0,
-    pass_mark_percent   SMALLINT NOT NULL DEFAULT 60
+    pass_mark_percent   SMALLINT NOT NULL DEFAULT 60,
+    video_url           VARCHAR(255)               -- optional companion video (Weblook Shield YouTube channel)
 );
+
+-- Patches an ALREADY-EXISTING database (one created before video support was
+-- added) without requiring a destructive drop/recreate. ADD COLUMN IF NOT
+-- EXISTS is safe to re-run — this line is a no-op on a fresh install where
+-- the CREATE TABLE above already included the column.
+ALTER TABLE training_modules ADD COLUMN IF NOT EXISTS video_url VARCHAR(255);
 
 CREATE TABLE IF NOT EXISTS quiz_questions (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),

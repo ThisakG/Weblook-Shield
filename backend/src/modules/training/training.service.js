@@ -10,7 +10,7 @@ const { pool } = require('../../config/db');
 
 async function listModulesWithProgress(userId) {
   const { rows } = await pool.query(
-    `SELECT m.id, m.title, m.description, m.estimated_minutes, m.order_index, m.pass_mark_percent,
+    `SELECT m.id, m.title, m.description, m.estimated_minutes, m.order_index, m.pass_mark_percent, m.video_url,
             COALESCE(tp.status, 'not_started') AS status, tp.completed_at
      FROM training_modules m
      LEFT JOIN training_progress tp ON tp.module_id = m.id AND tp.user_id = $1
