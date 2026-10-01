@@ -13,6 +13,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../../api/client';
+import YouTubeCard from '../../components/YouTubeCard';
 
 export default function TrainingModule() {
   const { id } = useParams();
@@ -47,6 +48,11 @@ export default function TrainingModule() {
     <div className="space-y-4">
       <div className="card">
         <h1 className="text-2xl font-bold text-slate-900">{trainingModule.title}</h1>
+
+        {/* Companion video, placed immediately under the topic heading as requested.
+            Renders nothing automatically if this module has no video_url set. */}
+        <YouTubeCard url={trainingModule.video_url} title={trainingModule.title} />
+
         <p className="mt-3 whitespace-pre-line text-sm text-slate-700">{trainingModule.lesson_content}</p>
       </div>
 
