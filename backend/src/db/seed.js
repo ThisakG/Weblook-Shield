@@ -128,11 +128,24 @@ Enforcement: Failure to report a known incident, or deliberate concealment, is t
 // The six security-awareness training modules, condensed from
 // Weblook_Shield_Security_Awareness_Training_Content.docx, each with its
 // real quiz questions and answer key from Appendix A of that document.
+//
+// video_url: the companion clip from Weblook's own YouTube channel for each
+// module, shown as a clickable thumbnail card right under the module title
+// (see frontend/src/components/YouTubeCard.jsx). It opens in a new tab on
+// click rather than embedding an inline player, per the team's decision.
+//
+// >>> REPLACE THE PLACEHOLDER URLS BELOW WITH YOUR REAL VIDEO LINKS <<<
+// Any full YouTube URL works (youtube.com/watch?v=..., youtu.be/...). After
+// editing, re-run `npm run seed` — the seed script UPDATEs video_url on
+// modules that already exist, so this is safe to run again on a database
+// that's already been seeded once (see the seed() function below).
+// Leave a value as '' (empty string) to show no video card for that module.
 const MODULES = [
   {
     title: 'Password Hygiene & Authentication Security',
     description: 'Why weak or reused passwords are the leading cause of account compromise, and how MFA protects you even if a password is stolen.',
     estimated_minutes: 10,
+    video_url: 'https://www.youtube.com/watch?v=REPLACE_ME_PASSWORD_HYGIENE',
     lesson_content: `Weak, reused and predictable passwords remain the single most common entry point attackers use to compromise corporate accounts. A password leaked from an unrelated site can be tried automatically ("credential stuffing") against your Weblook Shield account.
 
 Length beats complexity: a long passphrase of several unrelated words is easier to remember and harder to crack than a short, complex-looking password. Aim for at least 14 characters, avoid personal details, and never reuse your Weblook Shield password elsewhere.
@@ -152,6 +165,7 @@ If you suspect your password has been exposed, contact IT Administration immedia
     title: 'Phishing & Social Engineering Awareness',
     description: 'Recognising phishing warning signs and understanding why social engineering exploits trust and urgency.',
     estimated_minutes: 12,
+    video_url: 'https://www.youtube.com/watch?v=REPLACE_ME_PHISHING_AWARENESS',
     lesson_content: `Phishing tries to trick you into revealing credentials, approving a fraudulent request, or installing malware, usually by impersonating someone you trust. Warning signs include an almost-right sender address, urgent or threatening language, unexpected attachments/links, and requests to bypass normal approval steps.
 
 Attackers rely on psychology, not just technology: they create urgency so you act before you think. Hover over links to check the real destination, check the sender's actual address, and navigate to Weblook Shield directly via a bookmark rather than clicking email links. If a request seems unusual, verify it through a separate channel before acting.
@@ -169,6 +183,7 @@ Report suspicious messages through the incident reporting feature rather than si
     title: 'Data Protection & Privacy Essentials',
     description: 'What data Weblook Shield holds, least privilege, and how to handle confidential data responsibly.',
     estimated_minutes: 10,
+    video_url: 'https://www.youtube.com/watch?v=REPLACE_ME_DATA_PROTECTION',
     lesson_content: `Weblook Shield stores account information, role assignments, policy acknowledgements, quiz scores, activity logs, and asset-request records — for security governance only, never for performance reviews or general surveillance.
 
 Individual-level data (your quiz scores, login history, compliance status) is restricted to administrators and your relevant department head, not visible company-wide. The System Owner has read-only access to aggregate data only. This mirrors the least-privilege principle: access the minimum data necessary to do your job.
@@ -186,6 +201,7 @@ Never export, screenshot, or share confidential data outside approved processes,
     title: 'Acceptable Use of Company IT Resources',
     description: 'What counts as acceptable use, personal accountability, and the device-naming requirement.',
     estimated_minutes: 9,
+    video_url: 'https://www.youtube.com/watch?v=REPLACE_ME_ACCEPTABLE_USE',
     lesson_content: `The Acceptable Use Policy sets the ground rules for using Weblook's accounts, devices, network and software, so everyone shares an unambiguous understanding of what is and isn't permitted.
 
 Every action taken under your account is attributed to you and logged. Never share credentials, leave sessions open on shared devices, or let someone else use your account "just this once." If your account may have been used without your knowledge, report it immediately.
@@ -206,6 +222,7 @@ Policy violations are reviewed proportionately by administrators, from a reminde
     title: 'Remote Working Security',
     description: 'Additional risks of working outside the office, and how to secure your connection, device and workspace.',
     estimated_minutes: 10,
+    video_url: 'https://www.youtube.com/watch?v=REPLACE_ME_REMOTE_WORKING',
     lesson_content: `Outside the office you lose managed firewalls, monitored Wi-Fi and physical access control. Cafés, airports and shared home networks introduce new risks: unsecured Wi-Fi, shoulder-surfing, and personal devices that may not be patched to the same standard as company equipment.
 
 Avoid accessing company systems over open public Wi-Fi without an encrypted connection. Keep your home router's firmware updated and change its default admin password. Weblook Shield enforces TLS for all traffic, but that protects data on the wire, not a device that's already compromised.
@@ -223,6 +240,7 @@ Lock your screen whenever you step away, even at home, and never let family memb
     title: 'Incident Recognition & Reporting',
     description: 'What qualifies as an incident, and why fast, blame-free reporting improves outcomes.',
     estimated_minutes: 8,
+    video_url: 'https://www.youtube.com/watch?v=REPLACE_ME_INCIDENT_REPORTING',
     lesson_content: `A security incident isn't only a major breach — it includes a suspicious email, a lost device, an unexpected password reset prompt, unfamiliar account activity, or sending sensitive information to the wrong person. If something feels "off," it's worth reporting.
 
 The value of a report drops sharply with time — the faster the security team knows, the more options they have to contain it. Every authentication event and policy action is already logged to an append-only audit trail, so reports are corroborated by evidence.
@@ -295,11 +313,22 @@ async function seed() {
       let moduleId;
       if (existing.rows.length) {
         moduleId = existing.rows[0].id;
+        // The module row itself already exists (e.g. from an earlier seed
+        // run), but video_url is the one field editors realistically need
+        // to change after the fact — as soon as the real YouTube links are
+        // ready — without wanting to wipe and re-seed everything else
+        // (quiz questions, progress, etc.). So this single column is kept
+        // in sync on every seed run; nothing else about an existing module
+        // is touched.
+        await client.query(
+          `UPDATE training_modules SET video_url = $1 WHERE id = $2`,
+          [m.video_url || null, moduleId]
+        );
       } else {
         const inserted = await client.query(
-          `INSERT INTO training_modules (title, description, lesson_content, estimated_minutes, order_index, pass_mark_percent)
-           VALUES ($1,$2,$3,$4,$5,60) RETURNING id`,
-          [m.title, m.description, m.lesson_content, m.estimated_minutes, i]
+          `INSERT INTO training_modules (title, description, lesson_content, estimated_minutes, order_index, pass_mark_percent, video_url)
+           VALUES ($1,$2,$3,$4,$5,60,$6) RETURNING id`,
+          [m.title, m.description, m.lesson_content, m.estimated_minutes, i, m.video_url || null]
         );
         moduleId = inserted.rows[0].id;
         for (let q = 0; q < m.questions.length; q++) {
