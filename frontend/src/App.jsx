@@ -37,7 +37,6 @@ import Oversight from './pages/systemowner/Oversight.jsx';
 
 function RoleHome() {
   const { user } = useAuth();
-  if (user?.role === 'administrator') return <AdminOverview />;
   if (user?.role === 'system_owner') return <Oversight />;
   return <EmployeeDashboard />;
 }
