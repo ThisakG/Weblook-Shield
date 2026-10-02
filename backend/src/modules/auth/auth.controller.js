@@ -71,7 +71,7 @@ async function login(req, res, next) {
 
     const { accessToken, refreshToken } = await authService.issueSession(user);
     res.cookie('refreshToken', refreshToken, REFRESH_COOKIE_OPTS);
-    issueCsrfCookie(res);
+    const csrfToken = issueCsrfCookie(res);
 
     await recordAudit({ actorId: user.id, actorEmail: user.email, action: 'LOGIN_SUCCESS', ipAddress: req.ip });
 
@@ -94,7 +94,7 @@ async function refresh(req, res, next) {
 
     const { accessToken, refreshToken } = await authService.rotateRefreshToken(oldToken);
     res.cookie('refreshToken', refreshToken, REFRESH_COOKIE_OPTS);
-    issueCsrfCookie(res);
+    const csrfToken = issueCsrfCookie(res);
     res.json({ accessToken });
   } catch (err) {
     res.clearCookie('refreshToken', { path: '/api/auth' });
