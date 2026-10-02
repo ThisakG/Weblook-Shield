@@ -37,6 +37,7 @@ const CSRF_COOKIE_OPTS = {
 function issueCsrfCookie(res) {
   const csrfToken = crypto.randomBytes(24).toString('hex');
   res.cookie('csrfToken', csrfToken, CSRF_COOKIE_OPTS);
+  return csrfToken;
 }
 
 async function register(req, res, next) {
@@ -75,7 +76,7 @@ async function login(req, res, next) {
     await recordAudit({ actorId: user.id, actorEmail: user.email, action: 'LOGIN_SUCCESS', ipAddress: req.ip });
 
     res.json({
-      accessToken,
+      accessToken, csrfToken,
       user: { id: user.id, fullName: user.full_name, email: user.email, role: user.role, department: user.department, mfaEnabled: user.mfa_enabled },
     });
   } catch (err) {

@@ -26,6 +26,7 @@ export function AuthProvider({ children }) {
       try {
         const { data } = await api.post('/auth/refresh');
         setAccessToken(data.accessToken);
+        setCsrfToken(data.csrfToken);
         const me = await api.get('/auth/me');
         setUser(me.data);
       } catch {

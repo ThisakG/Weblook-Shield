@@ -28,10 +28,13 @@ let accessToken = null;
 export function setAccessToken(token) { accessToken = token; }
 export function getAccessToken() { return accessToken; }
 
-function readCookie(name) {
-  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
-  return match ? decodeURIComponent(match[1]) : null;
-}
+let csrfToken = null;
+export function setCsrfToken(token) { csrfToken = token; }
+
+//function readCookie(name) {
+//  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+//  return match ? decodeURIComponent(match[1]) : null;
+//}
 
 api.interceptors.request.use((config) => {
   if (accessToken) {
@@ -40,9 +43,8 @@ api.interceptors.request.use((config) => {
   // Echo the CSRF cookie back as a header on state-changing requests — see
   // backend/src/middleware/csrf.js for why this defeats CSRF attacks.
   if (['post', 'put', 'patch', 'delete'].includes((config.method || '').toLowerCase())) {
-    const csrfToken = readCookie('csrfToken');
-    if (csrfToken) config.headers['X-CSRF-Token'] = csrfToken;
-  }
+  if (csrfToken) config.headers['X-CSRF-Token'] = csrfToken;
+}
   return config;
 });
 
@@ -60,6 +62,7 @@ api.interceptors.response.use(
         const { data } = await refreshingPromise;
         refreshingPromise = null;
         setAccessToken(data.accessToken);
+        if (data.csrfToken) setCsrfToken(data.csrfToken);
         original.headers.Authorization = `Bearer ${data.accessToken}`;
         return api(original);
       } catch (refreshError) {

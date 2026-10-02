@@ -224,24 +224,6 @@ Lock your screen whenever you step away, even at home, and never let family memb
       { prompt: 'If you lose a company device while working remotely, you should:', options: [['A','Buy a replacement yourself and say nothing'],['B','Report it immediately through the incident reporting workflow'],['C','Assume it\'s not a big deal since it was password protected'],['D','Wait until you\'re back in the office to mention it']], correct: 'B' },
     ]
   },
-  {
-    title: 'Incident Recognition & Reporting',
-    description: 'What qualifies as an incident, and why fast, blame-free reporting improves outcomes.',
-    estimated_minutes: 8,
-    video_url: 'https://youtu.be/Ps2v2hQhC7U',
-    lesson_content: `A security incident isn't only a major breach — it includes a suspicious email, a lost device, an unexpected password reset prompt, unfamiliar account activity, or sending sensitive information to the wrong person. If something feels "off," it's worth reporting.
-
-The value of a report drops sharply with time — the faster the security team knows, the more options they have to contain it. Every authentication event and policy action is already logged to an append-only audit trail, so reports are corroborated by evidence.
-
-Use the incident reporting feature to submit what happened, when, and any relevant details. You don't need to be certain something is malicious — the security team decides whether escalation is needed. Reporting in good faith, including your own mistake, is treated as a positive action, not an admission of fault.`,
-    questions: [
-      { prompt: 'Which of the following is worth reporting as a possible security incident?', options: [['A','Only confirmed data breaches'],['B','Only incidents involving senior management'],['C','Nothing — only IT should notice these things'],['D','Anything unusual, such as a suspicious email or unfamiliar login activity']], correct: 'D' },
-      { prompt: 'Why does reporting speed matter for security incidents?', options: [['A','It doesn\'t — timing makes no difference'],['B','Faster reporting gives the security team more options to contain a problem'],['C','Late reports are always ignored automatically'],['D','Only annual reports are reviewed']], correct: 'B' },
-      { prompt: 'Do you need to be certain something is malicious before reporting it?', options: [['A','Yes, unconfirmed issues should never be reported'],['B','No — the security team decides whether escalation is needed'],['C','Only administrators can determine this before reporting'],['D','Only if a manager tells you to report it']], correct: 'B' },
-      { prompt: 'What supports an incident report within Weblook Shield?', options: [['A','Nothing — reports rely purely on memory'],['B','Manual paper records only'],['C','A public voting system'],['D','The append-only audit trail logging authentication and policy events']], correct: 'D' },
-      { prompt: 'How is a good-faith incident report generally treated within the organisation?', options: [['A','As an admission of fault'],['B','As grounds for automatic disciplinary action'],['C','As a positive, responsible action'],['D','It is ignored unless repeated three times']], correct: 'C' },
-    ]
-  },
 ];
 
 // A handful of sample assets so the Asset Inventory / Asset Request
