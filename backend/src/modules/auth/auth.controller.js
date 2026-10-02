@@ -20,7 +20,7 @@ const env = require('../../config/env');
 // hosting guide for how TLS termination is configured at the proxy layer.
 const REFRESH_COOKIE_OPTS = {
   httpOnly: true, // JavaScript can NEVER read this cookie — mitigates XSS token theft
-  sameSite: 'strict', // never sent on cross-site requests — core CSRF defence
+  sameSite: 'none', 
   secure: env.NODE_ENV === 'production',
   path: '/api/auth',
   maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -28,7 +28,7 @@ const REFRESH_COOKIE_OPTS = {
 
 const CSRF_COOKIE_OPTS = {
   httpOnly: false, // the frontend must be able to read this one to echo it back in a header
-  sameSite: 'strict',
+  sameSite: 'none',
   secure: env.NODE_ENV === 'production',
   path: '/',
   maxAge: 7 * 24 * 60 * 60 * 1000,

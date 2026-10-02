@@ -111,18 +111,6 @@ Policy Statement:
 
 Enforcement: Unauthorised privilege escalation or granting access outside documented approval is a serious violation subject to immediate review.`
   },
-  {
-    code: 'WSP-06', title: 'Incident Reporting & Response Policy', category: 'Incident Response', owner: 'Chief Operations Officer (COO)', is_device_policy: false,
-    content: `Purpose: Defines what constitutes a reportable security incident, how incidents are reported, and how Weblook responds — so issues are identified and contained as early as possible.
-
-Policy Statement:
-- Reportable events include suspicious messages, lost/stolen devices, unexpected authentication activity, accidental data disclosure, or anything inconsistent with normal authorised use.
-- Incidents are reported through the incident reporting workflow as soon as they are identified; reporters do not need to be certain the incident is malicious — the security team assesses and escalates.
-- Reports are reviewed by administrators and cross-referenced against the append-only audit trail.
-- Good-faith reporting — including reporting one's own mistake — is treated as a positive, responsible action, never grounds for disciplinary action by itself. Concealing a known incident is treated more seriously than the incident itself.
-
-Enforcement: Failure to report a known incident, or deliberate concealment, is treated as a serious violation.`
-  },
 ];
 
 // The six security-awareness training modules, condensed from
