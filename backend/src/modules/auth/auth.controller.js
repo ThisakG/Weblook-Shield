@@ -95,7 +95,7 @@ async function refresh(req, res, next) {
     const { accessToken, refreshToken } = await authService.rotateRefreshToken(oldToken);
     res.cookie('refreshToken', refreshToken, REFRESH_COOKIE_OPTS);
     const csrfToken = issueCsrfCookie(res);
-    res.json({ accessToken });
+    res.json({ accessToken, csrfToken });
   } catch (err) {
     res.clearCookie('refreshToken', { path: '/api/auth' });
     next(err);
