@@ -37,7 +37,6 @@ export default function AuditLog() {
   link.remove();
   window.URL.revokeObjectURL(url);
 }
-  }
 
   return (
     <div className="space-y-4">
