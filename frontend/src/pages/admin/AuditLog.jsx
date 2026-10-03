@@ -20,8 +20,23 @@ export default function AuditLog() {
   }
   useEffect(load, [actionFilter]);
 
-  function exportCsv() {
-    window.open(`${api.defaults.baseURL}/audit/export.csv${actionFilter ? `?action=${actionFilter}` : ''}`, '_blank');
+  async function exportCsv() {
+  const res = await api.get(
+    `/audit/export.csv${actionFilter ? `?action=${actionFilter}` : ''}`,
+    { responseType: 'blob' } // tell axios to hand back raw file bytes, not try to parse JSON
+  );
+  // Build a temporary, local object URL for the downloaded file — this
+  // happens entirely in memory, no second network request, so it carries
+  // no auth requirement of its own.
+  const url = window.URL.createObjectURL(new Blob([res.data]));
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', 'audit-log.csv');
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(url);
+}
   }
 
   return (
